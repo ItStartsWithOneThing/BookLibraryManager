@@ -1,17 +1,20 @@
-﻿using System;
+﻿using BookLibraryManagerDAL.Entities;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace BookLibraryManagerDAL
 {
-    public interface IDbRepository<T> where T: class
+    public interface IDbRepository<T> where T: BaseEntity, new()
     {
-        void Create(T book);
+        Task<Guid> Add(T item);
 
-        void Get(Guid id);
+        Task<IEnumerable<T>> GetAll();
 
-        void Update(T book);
+        Task<T> GetByID(Guid id);
 
-        void Delete(Guid Id);
+        Task<bool> Update(T item);
+
+        Task<bool> DeleteById(Guid Id);
     }
 }

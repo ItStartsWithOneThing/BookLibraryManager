@@ -1,8 +1,5 @@
 ﻿using BookLibraryManagerDAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BookLibraryManagerDAL
 {
@@ -10,7 +7,7 @@ namespace BookLibraryManagerDAL
     {
         public DbSet<BookDTO> Books { get; set; }
 
-        public DbSet<LibraryDTO> Clients { get; set; }
+        public DbSet<ClientDTO> Clients { get; set; }
 
         public DbSet<LibraryDTO> Libraries { get; set; }
 

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BookLibraryManagerDAL.Entities
+﻿namespace BookLibraryManagerDAL.Entities
 {
-    public class ClientDTO
+    public class ClientDTO : BaseEntity
     {
     }
 }

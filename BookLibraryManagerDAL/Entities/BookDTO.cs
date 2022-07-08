@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BookLibraryManagerDAL.Entities
+﻿namespace BookLibraryManagerDAL.Entities
 {
-    public class BookDTO
+    public class BookDTO : BaseEntity
     {
+        public string Title { get; set; }
+
+        public string Author { get; set; }
     }
 }

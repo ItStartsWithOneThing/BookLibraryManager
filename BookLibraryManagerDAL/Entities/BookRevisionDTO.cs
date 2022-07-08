@@ -1,6 +1,6 @@
 ﻿namespace BookLibraryManagerDAL.Entities
 {
-    public class LibraryDTO : BaseEntity
+    public class BookRevisionDTO : BaseEntity
     {
     }
 }

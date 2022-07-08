@@ -18,7 +18,7 @@ namespace BookLibraryManagerBL
         {
             if(book != null)
             {
-
+                
             }
             return null;
         }

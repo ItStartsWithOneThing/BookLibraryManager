@@ -1,6 +1,5 @@
 using BookLibraryManagerBL;
 using BookLibraryManagerDAL;
-using BookLibraryManagerDAL.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,9 +26,7 @@ namespace BookLibraryManager
             services.AddScoped<ClientService>();
             services.AddScoped<LibraryService>();
 
-            services.AddScoped<IDbRepository<BookDTO>, BookDbRepository>();
-            services.AddScoped<IDbRepository<ClientDTO>, ClientDbRepository>();
-            services.AddScoped<IDbRepository<LibraryDTO>, LibraryDbRepository>();
+            services.AddScoped(typeof(IDbRepository<>), typeof(DbRepository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

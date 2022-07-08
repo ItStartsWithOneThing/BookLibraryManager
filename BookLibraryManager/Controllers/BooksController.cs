@@ -3,8 +3,6 @@ using BookLibraryManagerBL.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BookLibraryManager.Controllers
@@ -23,31 +21,31 @@ namespace BookLibraryManager.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateBook(Book book)
+        public async Task<IActionResult> CreateBook(Book book)
         {
             return Ok();
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetBookById(Guid id)
+        public async Task<IActionResult> GetBookById(Guid id)
         {
             return Ok();
         }
 
         [HttpGet("getAll")]
-        public IActionResult GetAllBooks()
+        public async Task<IActionResult> GetAllBooks()
         {
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateBook(Guid id, Book book)
+        public async Task<IActionResult> UpdateBook(Guid id, Book book)
         {
             return Ok();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteBook(Guid id)
+        public async Task<IActionResult> DeleteBook(Guid id)
         {
             return Ok();
         }
