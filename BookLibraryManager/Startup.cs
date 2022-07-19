@@ -1,10 +1,15 @@
 using BookLibraryManagerBL;
+using BookLibraryManagerBL.AutoMapper.Profiles;
+using BookLibraryManagerBL.BooksService.Services;
 using BookLibraryManagerDAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace BookLibraryManager
 {
@@ -22,11 +27,28 @@ namespace BookLibraryManager
         {
             services.AddControllers();
 
-            services.AddScoped<BookService>();
-            services.AddScoped<ClientService>();
-            services.AddScoped<LibraryService>();
+            services.AddDbContext<EFCoreContext>(options =>
+                        options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
 
-            services.AddScoped(typeof(IDbRepository<>), typeof(DbRepository<>));
+
+            services.AddScoped<IBooksService, BooksService>();
+            services.AddScoped<UserService>();
+            services.AddScoped<LibrariesService>();
+
+            var assemblies = new[]
+            {
+                Assembly.GetAssembly(typeof(BookProfile))
+            };
+
+            services.AddAutoMapper(assemblies);
+
+            services.AddScoped(typeof(IDbGenericRepository<>), typeof(DbGenericRepository<>));
+            services.AddScoped<IDbBooksRepository, DbBooksRepository>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BookLibraryManager", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +57,9 @@ namespace BookLibraryManager
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookLibraryManager v1"));
             }
 
             app.UseHttpsRedirection();

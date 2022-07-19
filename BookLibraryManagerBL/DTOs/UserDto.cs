@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BookLibraryManagerBL.Models
 {
-    public class Client
+    public class UserDto
     {
         public Guid Id { get; set; }
 

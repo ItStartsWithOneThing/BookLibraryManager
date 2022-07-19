@@ -1,10 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
+
+using System;
 
 namespace BookLibraryManagerDAL.Entities
 {
-    class Point
+    public class Point : BaseEntity
     {
+        public float Longitude { get; set; }
+
+        public float Latitude { get; set; }
+
+        public Library Library { get; set; }
     }
 }

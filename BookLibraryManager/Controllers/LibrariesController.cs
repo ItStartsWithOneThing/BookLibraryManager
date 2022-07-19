@@ -17,7 +17,7 @@ namespace BookLibraryManager.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Library _library)
+        public IActionResult Create(LibraryDto _library)
         {
 
             return null;

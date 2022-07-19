@@ -1,7 +1,6 @@
 ﻿namespace BookLibraryManagerBL
 {
-    public class LibraryService
+    public class UserService
     {
-
     }
 }

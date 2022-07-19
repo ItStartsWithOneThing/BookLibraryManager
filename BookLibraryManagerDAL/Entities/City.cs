@@ -4,7 +4,10 @@ using System.Text;
 
 namespace BookLibraryManagerDAL.Entities
 {
-    class City
+    public class City : BaseEntity
     {
+        public string Name { get; set; }
+
+        public Library Library { get; set; }
     }
 }

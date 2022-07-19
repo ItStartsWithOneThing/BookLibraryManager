@@ -1,32 +1,30 @@
-﻿using System;
+﻿using BookLibraryManagerBL.DTOs;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BookLibraryManagerBL.Models
 {
-    public class Book
+    public class LibraryDto
     {
-        public IEnumerable<Library> Libraries { get; set; }
+        public IEnumerable<BookDto> Books { get; set; }
 
         public Guid Id { get; set; }
 
         [Required(ErrorMessage = "This field is required to fill out")]
         [MinLength(2, ErrorMessage = "Min length - 2")]
         [MaxLength(30, ErrorMessage = "Max length - 30")]
-        public string Title { get; set; }
-
-        [Required(ErrorMessage = "This field is required to fill out")]
-        [Range(3, 50_000, ErrorMessage = "Pages amount should be between 3 and 50 000")]
-        public int PagesCount { get; set; }
-
-        [Required(ErrorMessage = "This field is required to fill out")]
-        public int PublishingYear { get; set; }
+        public string Name { get; set; }
 
         [Required(ErrorMessage = "This field is required to fill out")]
         [MinLength(2, ErrorMessage = "Min length - 2")]
         [MaxLength(30, ErrorMessage = "Max length - 30")]
-        public string Author { get; set; }
+        public string City { get; set; }
 
-        public int RentCount { get; set; }
+        [Required(ErrorMessage = "This field is required to fill out")]
+        public double Latitude { get; set; }
+
+        [Required(ErrorMessage = "This field is required to fill out")]
+        public double Longitude { get; set; }
     }
 }

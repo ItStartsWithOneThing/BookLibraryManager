@@ -5,12 +5,12 @@ namespace BookLibraryManager.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ClientsController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private readonly ILogger<ClientsController> _logger;
+        private readonly ILogger<UsersController> _logger;
         //private readonly IClientService _clientService;
 
-        public ClientsController(ILogger<ClientsController> logger)
+        public UsersController(ILogger<UsersController> logger)
         {
             _logger = logger;
         }
