@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookLibraryManagerDAL.Migrations
 {
     [DbContext(typeof(EFCoreContext))]
-    [Migration("20220719162711_Initial")]
+    [Migration("20220722211254_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,6 +117,10 @@ namespace BookLibraryManagerDAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LibraryId");
+
+                    b.HasIndex("RevisionId");
+
                     b.ToTable("LibraryBooks");
                 });
 
@@ -157,6 +161,8 @@ namespace BookLibraryManagerDAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LibraryBookId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("RentBooks");
@@ -171,6 +177,9 @@ namespace BookLibraryManagerDAL.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
@@ -180,51 +189,6 @@ namespace BookLibraryManagerDAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("BookRevisionLibraryBook", b =>
-                {
-                    b.Property<Guid>("BookRevisionsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("LibraryBooksId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("BookRevisionsId", "LibraryBooksId");
-
-                    b.HasIndex("LibraryBooksId");
-
-                    b.ToTable("BookRevisionLibraryBook");
-                });
-
-            modelBuilder.Entity("LibraryBookRentBook", b =>
-                {
-                    b.Property<Guid>("LibraryBooksId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RentBooksId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("LibraryBooksId", "RentBooksId");
-
-                    b.HasIndex("RentBooksId");
-
-                    b.ToTable("LibraryBookRentBook");
-                });
-
-            modelBuilder.Entity("LibraryLibraryBook", b =>
-                {
-                    b.Property<Guid>("LibrariesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("LibraryBooksId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("LibrariesId", "LibraryBooksId");
-
-                    b.HasIndex("LibraryBooksId");
-
-                    b.ToTable("LibraryLibraryBook");
                 });
 
             modelBuilder.Entity("BookLibraryManagerDAL.Entities.BookRevision", b =>
@@ -257,60 +221,42 @@ namespace BookLibraryManagerDAL.Migrations
                     b.Navigation("Location");
                 });
 
+            modelBuilder.Entity("BookLibraryManagerDAL.Entities.LibraryBook", b =>
+                {
+                    b.HasOne("BookLibraryManagerDAL.Entities.Library", "Library")
+                        .WithMany("LibraryBooks")
+                        .HasForeignKey("LibraryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookLibraryManagerDAL.Entities.BookRevision", "BookRevision")
+                        .WithMany("LibraryBooks")
+                        .HasForeignKey("RevisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BookRevision");
+
+                    b.Navigation("Library");
+                });
+
             modelBuilder.Entity("BookLibraryManagerDAL.Entities.RentBook", b =>
                 {
+                    b.HasOne("BookLibraryManagerDAL.Entities.LibraryBook", "LibraryBook")
+                        .WithMany("RentBooks")
+                        .HasForeignKey("LibraryBookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BookLibraryManagerDAL.Entities.User", "User")
                         .WithMany("RentBooks")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("LibraryBook");
+
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BookRevisionLibraryBook", b =>
-                {
-                    b.HasOne("BookLibraryManagerDAL.Entities.BookRevision", null)
-                        .WithMany()
-                        .HasForeignKey("BookRevisionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookLibraryManagerDAL.Entities.LibraryBook", null)
-                        .WithMany()
-                        .HasForeignKey("LibraryBooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("LibraryBookRentBook", b =>
-                {
-                    b.HasOne("BookLibraryManagerDAL.Entities.LibraryBook", null)
-                        .WithMany()
-                        .HasForeignKey("LibraryBooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookLibraryManagerDAL.Entities.RentBook", null)
-                        .WithMany()
-                        .HasForeignKey("RentBooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("LibraryLibraryBook", b =>
-                {
-                    b.HasOne("BookLibraryManagerDAL.Entities.Library", null)
-                        .WithMany()
-                        .HasForeignKey("LibrariesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookLibraryManagerDAL.Entities.LibraryBook", null)
-                        .WithMany()
-                        .HasForeignKey("LibraryBooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BookLibraryManagerDAL.Entities.Book", b =>
@@ -318,9 +264,24 @@ namespace BookLibraryManagerDAL.Migrations
                     b.Navigation("BookRevisions");
                 });
 
+            modelBuilder.Entity("BookLibraryManagerDAL.Entities.BookRevision", b =>
+                {
+                    b.Navigation("LibraryBooks");
+                });
+
             modelBuilder.Entity("BookLibraryManagerDAL.Entities.City", b =>
                 {
                     b.Navigation("Library");
+                });
+
+            modelBuilder.Entity("BookLibraryManagerDAL.Entities.Library", b =>
+                {
+                    b.Navigation("LibraryBooks");
+                });
+
+            modelBuilder.Entity("BookLibraryManagerDAL.Entities.LibraryBook", b =>
+                {
+                    b.Navigation("RentBooks");
                 });
 
             modelBuilder.Entity("BookLibraryManagerDAL.Entities.Point", b =>

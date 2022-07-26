@@ -21,17 +21,24 @@ namespace BookLibraryManager.Controllers
             _booksService = booksService;
         }
 
+        #region CRUD
+
         #region Post
         [HttpPost]
         public async Task<IActionResult> CreateBook(BookDto book)
         {
             try
             {
-                var result = await _booksService.AddBook(book);
+                var result = await _booksService.CreateBook(book);
 
-                book.BookId = result;
+                if(!result.Equals(Guid.Empty))
+                {
+                    book.BookId = result;
 
-                return Created(result.ToString(), book);
+                    return Created(result.ToString(), book);
+                }
+
+                return NotFound();
             }
             catch (ArgumentException ex)
             {
@@ -54,35 +61,70 @@ namespace BookLibraryManager.Controllers
             return  NotFound(id);
         }
 
-        //[HttpGet("getAll")]
-        //public async Task<IActionResult> GetAllBooks()
-        //{
-        //    return Ok();
-        //}
-
-        [HttpGet("fullInfo/{id}")]
-        public async Task<IActionResult> GetFullInfo(Guid id)
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAllBooks()
         {
-            var result = await _booksService.GetFullInfo(id);
+            var result = await _booksService.GetAllBooks();
 
-            return Ok(result);
+            if(result != null)
+            {
+                return Ok(result);
+            }
+
+            return NotFound();
         }
+
         #endregion
 
         #region Put
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateBook(Guid id, BookDto book)
-        //{
-        //    return Ok();
-        //}
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateBook(BookDto book)
+        {
+            var result = await _booksService.UpdateBook(book);
+
+            if(result)
+            {
+                return Ok();
+            }
+
+            return NotFound();
+        }
+
         #endregion
 
         #region Delete
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteBook(Guid id)
-        //{
-        //    return Ok();
-        //}
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBook(Guid id)
+        {
+            var result = await _booksService.DeleteBook(id);
+
+            return Ok();
+        }
+
+        #endregion
+
+        #endregion CRUD
+
+        #region Get
+
+        [HttpGet("fullBookInfo/{id}")]
+        public async Task<IActionResult> GetFullBookInfo(Guid id) //TODO TEST MY QUERRY
+        {
+            var result = await _booksService.GetFullBookInfo(id);
+
+            return Ok(result);
+        }
+
+        [HttpGet("authorBooks/{author}")]
+        public async Task<IActionResult> GetAuthorBooks(string author)
+        {
+            var result = await _booksService.GetBooksByAuthor(author);
+
+            return Ok(result);
+        }
+
         #endregion
     }
 }

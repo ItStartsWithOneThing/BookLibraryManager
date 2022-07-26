@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookLibraryManagerDAL.Entities
@@ -11,6 +12,8 @@ namespace BookLibraryManagerDAL.Entities
         public string LastName { get; set; }
 
         public DateTime BirthDate { get; set; }
+
+        public string Email { get; set; }
 
         [ForeignKey("UserId")]
         public ICollection<RentBook> RentBooks { get; set; }

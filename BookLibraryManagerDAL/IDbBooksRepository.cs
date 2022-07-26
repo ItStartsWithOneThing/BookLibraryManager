@@ -7,7 +7,6 @@ namespace BookLibraryManagerDAL
 {
     public interface IDbBooksRepository
     {
-        Task<IEnumerable<Book>> GetAll();
-        Task<(Book book, IEnumerable<BookRevision> bookRevisions)> GetFullInfo(Guid id);
+        Task<Book> GetFullBookInfo(Guid id);
     }
 }

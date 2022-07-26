@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace BookLibraryManagerDAL
@@ -19,14 +20,39 @@ namespace BookLibraryManagerDAL
             _dbSet = _dbContext.Set<T>();
         }
 
-        public async Task<Guid> Add(T item)
+        #region CRUD
+
+        public async Task<Guid> Create(T item)
         {
             item.Id = Guid.NewGuid();
-            _dbSet.Add(item);
 
-            await _dbContext.SaveChangesAsync();
+            await _dbSet.AddAsync(item);
 
-            return item.Id;
+            var result = await _dbContext.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                return item.Id;
+            }
+
+            return Guid.Empty;
+        }
+
+        public async Task<T> GetById(Guid id)
+        {
+            return await _dbSet.Where(x => x.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetAll()
+        {
+            return await _dbSet.ToListAsync();
+        }
+
+        public async Task<bool> Update(T item)
+        {
+            _dbContext.Entry(item).State = EntityState.Modified;
+
+            return await _dbContext.SaveChangesAsync() != 0;
         }
 
         public async Task<bool> DeleteById(Guid id)
@@ -37,21 +63,15 @@ namespace BookLibraryManagerDAL
             return await _dbContext.SaveChangesAsync() != 0;
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        #endregion CRUD
+
+        #region Get
+
+        public async Task<IEnumerable<T>> GetRangeByPredicate(Expression<Func<T, bool>> predicate)
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.Where(predicate).ToListAsync();
         }
 
-        public async Task<T> GetById(Guid id)
-        {
-            return await _dbSet.Where(x => x.Id == id).FirstOrDefaultAsync();
-        }
-
-        public async Task<bool> Update(T item)
-        {
-            _dbContext.Entry(item).State = EntityState.Modified;
-
-            return await _dbContext.SaveChangesAsync() != 0;
-        }     
+        #endregion
     }
 }

@@ -4,14 +4,16 @@ using BookLibraryManagerDAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookLibraryManagerDAL.Migrations
 {
     [DbContext(typeof(EFCoreContext))]
-    partial class EFCoreContextModelSnapshot : ModelSnapshot
+    [Migration("20220723024345_ChangedRelationBetweenCityAndLibrary")]
+    partial class ChangedRelationBetweenCityAndLibrary
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,9 +92,6 @@ namespace BookLibraryManagerDAL.Migrations
                     b.Property<Guid>("LocationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
@@ -124,17 +123,17 @@ namespace BookLibraryManagerDAL.Migrations
                     b.ToTable("LibraryBooks");
                 });
 
-            modelBuilder.Entity("BookLibraryManagerDAL.Entities.Location", b =>
+            modelBuilder.Entity("BookLibraryManagerDAL.Entities.Point", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
+                    b.Property<float>("Latitude")
+                        .HasColumnType("real");
 
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
+                    b.Property<float>("Longitude")
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
@@ -210,7 +209,7 @@ namespace BookLibraryManagerDAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookLibraryManagerDAL.Entities.Location", "Location")
+                    b.HasOne("BookLibraryManagerDAL.Entities.Point", "Location")
                         .WithOne("Library")
                         .HasForeignKey("BookLibraryManagerDAL.Entities.Library", "LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -284,7 +283,7 @@ namespace BookLibraryManagerDAL.Migrations
                     b.Navigation("RentBooks");
                 });
 
-            modelBuilder.Entity("BookLibraryManagerDAL.Entities.Location", b =>
+            modelBuilder.Entity("BookLibraryManagerDAL.Entities.Point", b =>
                 {
                     b.Navigation("Library");
                 });

@@ -8,16 +8,15 @@ namespace BookLibraryManagerDAL.Entities
     {
         [ForeignKey("Location")]
         public Guid LocationId { get; set; }
+        public Location Location { get; set; }
 
-        public Point Location { get; set; }
-
-        [ForeignKey("City")]
         public Guid CityId { get; set; }
-
         public City City { get; set; }
 
+        public string Name { get; set; }
         public string FullAddress { get; set; }
 
+        [ForeignKey("LibraryId")]
         public ICollection<LibraryBook> LibraryBooks { get; set; }
     }
 }

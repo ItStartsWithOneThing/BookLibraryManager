@@ -28,24 +28,26 @@ namespace BookLibraryManagerBL.BooksService.Services
             _mapper = mapper;
         }
 
-        public async Task<Guid> AddBook(BookDto book)
+        #region CRUD
+
+        public async Task<Guid> CreateBook(BookDto book)
         {
+            var result = Guid.Empty;
+
             if (book != null)
             {
                 var dbBook = _mapper.Map<Book>(book);
 
-                var result = await _genericBookRepository.Add(dbBook);
+                result = await _genericBookRepository.Create(dbBook);
+            }
 
+            if(result != Guid.Empty)
+            {
                 return result;
             }
 
             return Guid.Empty;
         }
-
-        //public async Task<IEnumerable<BookDto>> GetAllBooks()
-        //{
-        //    return null;
-        //}
 
         public async Task<BookDto> GetBookById(Guid id)
         {
@@ -54,44 +56,57 @@ namespace BookLibraryManagerBL.BooksService.Services
             return _mapper.Map<BookDto>(book);
         }
 
-
-
-        //public async Task<bool> UpdateBook(BookDto book)
-        //{
-        //    return false;
-        //}
-
-        //public async Task<bool> DeleteBook(Guid id)
-        //{
-        //    return false;
-        //}
-
-        public async Task<BookDto> GetFullInfo(Guid id)
+        public async Task<IEnumerable<BookDto>> GetAllBooks()
         {
-            var result = await _booksRepository.GetFullInfo(id);
+            var result = await _genericBookRepository.GetAll();
 
-            return MapTupleToBookDto(result);
+            return _mapper.Map<IEnumerable<BookDto>>(result);
         }
 
-        private BookDto MapTupleToBookDto((Book book, IEnumerable<BookRevision> bookRevisions) result)
+
+        public async Task<bool> UpdateBook(BookDto book)
         {
-            return new BookDto()
-            {
-                Author = result.book?.Author,
-                Title = result.book?.Title,
-                BookId = result.book.Id,
-                BookRevisions = MapRevisions(result.bookRevisions)
-            };
+            var targetBook = _mapper.Map<Book>(book);
+
+            return await _genericBookRepository.Update(targetBook);
         }
 
-        private IEnumerable<BookRevisionDto> MapRevisions(IEnumerable<BookRevision> bookRevisions)
+        public async Task<bool> DeleteBook(Guid id)
         {
-            return bookRevisions.Select(x => new BookRevisionDto()
-            {
-                Price = x.Price,
-                PagesCount = x.PagesCount,
-                PublishingYear = x.PublishingYear
-            });
+            return await _genericBookRepository.DeleteById(id);
         }
+
+        #endregion CRUD
+
+        #region Get
+
+        public async Task<BookDto> GetFullBookInfo(Guid id)
+        {;
+
+            var result = await _booksRepository.GetFullBookInfo(id);
+
+            var book = _mapper.Map<BookDto>(result);
+
+            book.BookRevisions = _mapper.Map<IEnumerable<BookRevisionDto>>(book.BookRevisions);
+
+            return book;
+        }
+
+        public async Task<IEnumerable<BookDto>> GetBooksByAuthor(string author)
+        {
+            var booksList = await _genericBookRepository.GetRangeByPredicate(x=>x.Author==author);
+
+            var result = _mapper.Map<IEnumerable<BookDto>>(booksList);
+
+            return result;
+        }
+
+        public async Task<IEnumerable<BookDto>> GetNearestBooks(string cityName, float latitude, float longitude)
+        {
+
+            return null;
+        }
+
+        #endregion
     }
 }

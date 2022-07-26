@@ -9,6 +9,7 @@ namespace BookLibraryManagerBL.AutoMapper.Profiles
         public BookProfile()
         {
             CreateMap<BookDto, Book>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.BookId))
                 .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title));
 

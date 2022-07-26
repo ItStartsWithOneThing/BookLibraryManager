@@ -16,18 +16,11 @@ namespace BookLibraryManagerDAL
             _dbContext = context;
         }
 
-        public async Task<IEnumerable<Book>> GetAll()
+        public async Task<Book> GetFullBookInfo(Guid id)
         {
-            return await _dbContext.Books.ToListAsync();
-        }
+            var book = await _dbContext.Books.Include(x => x.BookRevisions).Where(x => x.Id == id).FirstOrDefaultAsync();
 
-        public async Task<(Book book, IEnumerable<BookRevision> bookRevisions)> GetFullInfo(Guid id)
-        {
-            var result = await _dbContext.BookRevisions.Include(x => x.Book).Where(x => x.BookId == id).ToListAsync();
-
-            var book = result.FirstOrDefault()?.Book;
-
-            return (book, result);
+            return (book);
         }
     }
 }

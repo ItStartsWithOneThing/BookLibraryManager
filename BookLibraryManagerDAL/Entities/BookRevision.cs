@@ -16,6 +16,7 @@ namespace BookLibraryManagerDAL.Entities
 
         public float Price { get; set; }
 
+        [ForeignKey("RevisionId")]
         public ICollection<LibraryBook> LibraryBooks { get; set; }
     }
 }

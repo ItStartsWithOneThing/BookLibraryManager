@@ -1,6 +1,7 @@
 using BookLibraryManagerBL;
 using BookLibraryManagerBL.AutoMapper.Profiles;
 using BookLibraryManagerBL.BooksService.Services;
+using BookLibraryManagerBL.Services.LibrariesService;
 using BookLibraryManagerDAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,7 +23,8 @@ namespace BookLibraryManager
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -33,7 +35,7 @@ namespace BookLibraryManager
 
             services.AddScoped<IBooksService, BooksService>();
             services.AddScoped<UserService>();
-            services.AddScoped<LibrariesService>();
+            services.AddScoped<ILibrariesService, LibrariesService>();
 
             var assemblies = new[]
             {
@@ -44,6 +46,7 @@ namespace BookLibraryManager
 
             services.AddScoped(typeof(IDbGenericRepository<>), typeof(DbGenericRepository<>));
             services.AddScoped<IDbBooksRepository, DbBooksRepository>();
+            services.AddScoped<IDbLibraryRepository, DbLibraryRepository>();
 
             services.AddSwaggerGen(c =>
             {
@@ -51,7 +54,7 @@ namespace BookLibraryManager
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

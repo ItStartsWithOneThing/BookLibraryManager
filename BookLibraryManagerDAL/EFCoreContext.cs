@@ -7,7 +7,7 @@ namespace BookLibraryManagerDAL
     {
         public DbSet<Book> Books { get; set; }
 
-        public DbSet<Point> Locations { get; set; }
+        public DbSet<Location> Locations { get; set; }
 
         public DbSet<City> Cities { get; set; }
 
@@ -25,8 +25,7 @@ namespace BookLibraryManagerDAL
 
         public EFCoreContext(DbContextOptions<EFCoreContext> options) : base(options)
         {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)

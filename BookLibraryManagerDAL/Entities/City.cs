@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace BookLibraryManagerDAL.Entities
@@ -8,6 +9,7 @@ namespace BookLibraryManagerDAL.Entities
     {
         public string Name { get; set; }
 
-        public Library Library { get; set; }
+        [ForeignKey("CityId")]
+        public ICollection<Library> Libraries { get; set; }
     }
 }
