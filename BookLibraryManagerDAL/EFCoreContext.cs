@@ -21,11 +21,13 @@ namespace BookLibraryManagerDAL
 
         public DbSet<RentBook> RentBooks { get; set; }
 
+        public DbSet<Role> Roles { get; set; }
+
 
 
         public EFCoreContext(DbContextOptions<EFCoreContext> options) : base(options)
         {
-
+            
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)

@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 namespace BookLibraryManagerBL.BooksService.Services
 {
     public class BooksService : IBooksService
-
-    // Make Intarface Extraction and create service
     {
         private IDbGenericRepository<Book> _genericBookRepository;
 

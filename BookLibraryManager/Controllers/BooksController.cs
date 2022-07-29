@@ -1,6 +1,7 @@
 ﻿using BookLibraryManagerBL.BooksService.Services;
 using BookLibraryManagerBL.DTOs;
 using BookLibraryManagerDAL;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -21,7 +22,7 @@ namespace BookLibraryManager.Controllers
             _booksService = booksService;
         }
 
-        #region CRUD
+        #region StandartCRUD
 
         #region Post
         [HttpPost]
@@ -61,6 +62,8 @@ namespace BookLibraryManager.Controllers
             return  NotFound(id);
         }
 
+        //[Authorize(Roles = BookLibraryManagerBL.Auth.Roles.Librarian)] 
+        [Authorize(Roles = BookLibraryManagerBL.Auth.Roles.Reader+", "+ BookLibraryManagerBL.Auth.Roles.Librarian)] // Any Role, of list
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAllBooks()
         {
@@ -105,7 +108,7 @@ namespace BookLibraryManager.Controllers
 
         #endregion
 
-        #endregion CRUD
+        #endregion StandartCRUD
 
         #region Get
 
