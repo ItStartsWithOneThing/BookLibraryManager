@@ -4,14 +4,16 @@ using BookLibraryManagerDAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookLibraryManagerDAL.Migrations
 {
     [DbContext(typeof(EFCoreContext))]
-    partial class EFCoreContextModelSnapshot : ModelSnapshot
+    [Migration("20220729182512_Password")]
+    partial class Password
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,20 +170,6 @@ namespace BookLibraryManagerDAL.Migrations
                     b.ToTable("RentBooks");
                 });
 
-            modelBuilder.Entity("BookLibraryManagerDAL.Entities.Role", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-                });
-
             modelBuilder.Entity("BookLibraryManagerDAL.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -203,12 +191,7 @@ namespace BookLibraryManagerDAL.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -279,15 +262,6 @@ namespace BookLibraryManagerDAL.Migrations
                     b.Navigation("LibraryBook");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BookLibraryManagerDAL.Entities.User", b =>
-                {
-                    b.HasOne("BookLibraryManagerDAL.Entities.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId");
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("BookLibraryManagerDAL.Entities.Book", b =>

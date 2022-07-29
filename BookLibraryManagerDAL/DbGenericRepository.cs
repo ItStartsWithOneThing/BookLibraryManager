@@ -67,6 +67,11 @@ namespace BookLibraryManagerDAL
 
         #region Get
 
+        public async Task<T> GetSingleByPredicate(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).FirstOrDefaultAsync() ;
+        }
+
         public async Task<IEnumerable<T>> GetRangeByPredicate(Expression<Func<T, bool>> predicate)
         {
             return await _dbSet.Where(predicate).ToListAsync();

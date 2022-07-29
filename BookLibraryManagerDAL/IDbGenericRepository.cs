@@ -13,6 +13,7 @@ namespace BookLibraryManagerDAL
         Task<T> GetById(Guid id);
         Task<bool> Update(T item);
         Task<bool> DeleteById(Guid Id);
+        Task<T> GetSingleByPredicate(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>> GetRangeByPredicate(Expression<Func<T, bool>> predicate);
     }
 }
