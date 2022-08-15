@@ -10,6 +10,8 @@ namespace BookLibraryManagerBL.Services.AuthService
 
         Task<Guid> SignUp(UserDto user);
 
+        Task<bool> ConfirmUserEmail(string encryptedEmail);
+
         Task<bool> HashAdminSeedPass(string password);
     }
 }

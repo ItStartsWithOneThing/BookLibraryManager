@@ -4,8 +4,10 @@ using BookLibraryManagerBL.AutoMapper.Profiles;
 using BookLibraryManagerBL.BooksService.Services;
 using BookLibraryManagerBL.Options;
 using BookLibraryManagerBL.Services.AuthService;
+using BookLibraryManagerBL.Services.EncryptionService;
 using BookLibraryManagerBL.Services.HashService;
 using BookLibraryManagerBL.Services.LibrariesService;
+using BookLibraryManagerBL.Services.SMTPService;
 using BookLibraryManagerDAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -33,11 +35,17 @@ namespace BookLibraryManager
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpContextAccessor();
+            services.AddHttpContextAccessor(); // Serilog
 
 
             services.Configure<AuthOptions>(options =>
                 Configuration.GetSection(nameof(AuthOptions)).Bind(options));
+
+            services.Configure<SmtpConfiguration>(options =>
+                Configuration.GetSection(nameof(SmtpConfiguration)).Bind(options));
+
+            services.Configure<EncryptionConfiguration>(options =>
+                Configuration.GetSection(nameof(EncryptionConfiguration)).Bind(options));
 
             var authOptions = Configuration.GetSection(nameof(AuthOptions)).Get<AuthOptions>();
 
@@ -69,6 +77,8 @@ namespace BookLibraryManager
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenGenerator, TokenGenerator>();
             services.AddScoped<IHashService, HashService>();
+            services.AddScoped<ISmtpService, SmtpService>();
+            services.AddScoped<IEncryptionService, EncryptionService>();
 
             var assemblies = new[]
             {

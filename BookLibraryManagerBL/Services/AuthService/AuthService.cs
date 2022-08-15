@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BookLibraryManagerBL.Auth;
 using BookLibraryManagerBL.Models;
+using BookLibraryManagerBL.Services.EncryptionService;
 using BookLibraryManagerBL.Services.HashService;
+using BookLibraryManagerBL.Services.SMTPService;
 using BookLibraryManagerDAL;
 using BookLibraryManagerDAL.Entities;
 using System;
@@ -18,15 +20,24 @@ namespace BookLibraryManagerBL.Services.AuthService
         private readonly ITokenGenerator _tokenGenerator;
         private readonly IHashService _hashService;
         private readonly IMapper _mapper;
+        private readonly ISmtpService _smtpService;
+        private readonly IEncryptionService _encryptionService;
 
-        public AuthService(IDbGenericRepository<User> genericUsersRepository, IDbGenericRepository<Role> genericRolesRepository,
-                            ITokenGenerator tokenGenerator, IHashService hashService, IMapper mapper)
+        public AuthService(IDbGenericRepository<User> genericUsersRepository,
+                            IDbGenericRepository<Role> genericRolesRepository,
+                            ITokenGenerator tokenGenerator, 
+                            IHashService hashService, 
+                            IMapper mapper, 
+                            ISmtpService smtpService,
+                            IEncryptionService encryptionService)
         {
             _genericUsersRepository = genericUsersRepository;
             _genericRolesRepository = genericRolesRepository;
             _tokenGenerator = tokenGenerator;
             _hashService = hashService;
             _mapper = mapper;
+            _smtpService = smtpService;
+            _encryptionService = encryptionService;
         }
 
         public async Task<string> SignIn(string login, string password)
@@ -48,17 +59,54 @@ namespace BookLibraryManagerBL.Services.AuthService
         {
             user.Password = _hashService.HashString(user.Password);
 
-            var newUser = _mapper.Map<User>(user);
-
-            var existingUser = _genericUsersRepository.GetSingleByPredicate(x => x.Email == user.Email);
+            var existingUser = await _genericUsersRepository.GetSingleByPredicate(x => x.Email == user.Email);
 
             if (existingUser == null)
             {
-                return await _genericUsersRepository.Create(newUser);
+                var newUser = _mapper.Map<User>(user);
+
+                var response = await _genericUsersRepository.Create(newUser);
+
+                await _smtpService.SendMail(
+                    new MailInfo()
+                    {
+                        ClientName = $"{user.FirstName} {user.LastName}",
+                        Email = user.Email,
+                        Subject = "BookKibraryManager - Email confirmation",
+                        Body = "https://localhost:5001/users/confirm?email="+GenerateConfirmationString(user.Email)
+                    });
+
+                return Guid.Empty;
             }
 
             throw new ArgumentException();
         }
+
+        private string GenerateConfirmationString(string email)
+        {
+            return _encryptionService.EncryptString(email);
+        }
+
+        public async Task<bool> ConfirmUserEmail(string encryptedEmail)
+        {
+            encryptedEmail = encryptedEmail.Replace(' ', '+');
+            var userEmail = _encryptionService.DecryptString(encryptedEmail);
+
+            var user = await _genericUsersRepository.GetSingleByPredicate(
+                x => x.Email == userEmail);
+
+            if (user != null)
+            {
+                user.IsConfirmed = true;
+                await _genericUsersRepository.Update(user);
+            }
+
+            return user != null;
+        }
+
+
+
+
 
         public async Task<bool> HashAdminSeedPass(string password)
         {

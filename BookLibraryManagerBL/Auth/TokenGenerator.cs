@@ -27,7 +27,7 @@ namespace BookLibraryManagerBL.Auth
                     audience: _authOptions.Audience,
                     notBefore: DateTime.UtcNow,
                     claims: identity.Claims,
-                    expires: DateTime.UtcNow.Add(TimeSpan.FromSeconds(_authOptions.LifetimeInMinutes)),
+                    expires: DateTime.UtcNow.Add(TimeSpan.FromSeconds(_authOptions.LifetimeInSeconds)),
                     signingCredentials:
                     new SigningCredentials(
                         new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_authOptions.Key)),

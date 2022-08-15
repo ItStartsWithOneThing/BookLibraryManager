@@ -71,5 +71,11 @@ namespace BookLibraryManager.Controllers
 
             return user.Id != Guid.Empty ? Created(user.Id.ToString(), user) : Unauthorized();
         }
+
+        [HttpGet("confirm")]
+        public async Task<IActionResult> ConfirmUserEmail(string email)
+        {
+            return Ok(await _authService.ConfirmUserEmail(email));
+        }
     }
 }
