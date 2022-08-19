@@ -21,6 +21,7 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using BookLibraryManager.Middlewares;
 
 namespace BookLibraryManager
 {
@@ -133,6 +134,8 @@ namespace BookLibraryManager
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookLibraryManager v1"));
             }
+
+            app.UseMiddleware<ErrorHandlerMiddleware>();
 
             app.UseHttpsRedirection();
 

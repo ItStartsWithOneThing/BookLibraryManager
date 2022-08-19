@@ -30,7 +30,7 @@ namespace BookLibraryManager.Controllers
                 token = await _authService.SignIn(login, password);
             }
 
-            catch(ArgumentException)
+            catch (ArgumentException)
             {
                 return Unauthorized();
             }
@@ -45,7 +45,7 @@ namespace BookLibraryManager.Controllers
 
             try
             {
-                 result = await _authService.HashAdminSeedPass(pass);
+                result = await _authService.HashAdminSeedPass(pass);
             }
 
             catch (ArgumentException)
@@ -59,15 +59,7 @@ namespace BookLibraryManager.Controllers
         [HttpPost]
         public async Task<IActionResult> SignUp(UserDto user)
         {
-            try
-            {
-                user.Id = await _authService.SignUp(user);
-            }
-
-            catch (ArgumentException)
-            {
-                return Unauthorized();
-            }
+            user.Id = await _authService.SignUp(user);
 
             return user.Id != Guid.Empty ? Created(user.Id.ToString(), user) : Unauthorized();
         }

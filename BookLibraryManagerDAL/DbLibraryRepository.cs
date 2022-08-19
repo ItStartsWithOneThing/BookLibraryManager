@@ -11,13 +11,13 @@ namespace BookLibraryManagerDAL
     public class DbLibraryRepository : IDbLibraryRepository
     {
         private EFCoreContext _dbContext { get; set; }
-        private DbSet<City> _dbSet;
+        private DbSet<City> _dbCities;
         private DbSet<Library> _dbLibraries;
 
         public DbLibraryRepository(EFCoreContext context)
         {
             _dbContext = context;
-            _dbSet = _dbContext.Set<City>();
+            _dbCities = _dbContext.Set<City>();
             _dbLibraries = _dbContext.Set<Library>();
         }
 
@@ -25,9 +25,12 @@ namespace BookLibraryManagerDAL
         {
             //var book = await _dbContext.Cities.Where(x => x.Name == cityName).Include(x => x.Libraries.Where(x => x.)).ToListAsync();
 
+            var selector1 = _dbContext.Users.Where(u => u.FirstName!.Contains("Tom")); // 
+            var selector2 = _dbContext.Users.Where(u => u.LastName!.Contains("Tom"));
+            var users = selector1.Except(selector2).AsEnumerable();
             return null;
         }
-
+            
         public async Task<IEnumerable<Library>> GetLibrariesByCity(string cityName)
         {
             return await _dbLibraries.Include(x => x.City).Include(x => x.Location).Where(x => x.City.Name == cityName).ToListAsync();

@@ -35,7 +35,11 @@ namespace BookLibraryManager.Controllers
         }
 
         [HttpGet("getNearestLibraries")]
-        public async Task<IActionResult> GetNearestLibraries([FromQuery]string cityName, [FromQuery] double latitude, [FromQuery] double longitude, [FromQuery]int amount=5)
+        public async Task<IActionResult> GetNearestLibraries(
+            [FromQuery]string cityName, 
+            [FromQuery] double latitude, 
+            [FromQuery] double longitude, 
+            [FromQuery]int amount=5)
         {
             var result = await _librariesService.GetNearestLibraries(cityName, latitude, longitude, amount);
 
@@ -43,6 +47,7 @@ namespace BookLibraryManager.Controllers
             {
                 return Ok(result);
             }
+
             return NotFound(result);
         }
     }

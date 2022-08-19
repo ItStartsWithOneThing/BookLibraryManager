@@ -52,7 +52,7 @@ namespace BookLibraryManagerBL.Services.AuthService
                 return _tokenGenerator.GenerateToken(user.Email, role);
             }
 
-            throw new ArgumentException();
+            throw new UnauthorizedAccessException("Wrong Email or Password");
         }
 
         public async Task<Guid> SignUp(UserDto user)
@@ -79,7 +79,7 @@ namespace BookLibraryManagerBL.Services.AuthService
                 return Guid.Empty;
             }
 
-            throw new ArgumentException();
+            throw new UnauthorizedAccessException("Use another Email address");
         }
 
         private string GenerateConfirmationString(string email)

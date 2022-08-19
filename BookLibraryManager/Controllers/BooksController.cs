@@ -28,23 +28,17 @@ namespace BookLibraryManager.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBook(BookDto book)
         {
-            try
+
+            var result = await _booksService.CreateBook(book);
+
+            if (!result.Equals(Guid.Empty))
             {
-                var result = await _booksService.CreateBook(book);
+                book.BookId = result;
 
-                if(!result.Equals(Guid.Empty))
-                {
-                    book.BookId = result;
-
-                    return Created(result.ToString(), book);
-                }
-
-                return NotFound();
+                return Created(result.ToString(), book);
             }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            return NotFound();
         }
         #endregion
 
@@ -54,22 +48,22 @@ namespace BookLibraryManager.Controllers
         {
             var book = await _booksService.GetBookById(id);
 
-            if(book != null)
+            if (book != null)
             {
                 return Ok(book);
             }
 
-            return  NotFound(id);
+            return NotFound(id);
         }
 
         //[Authorize(Roles = BookLibraryManagerBL.Auth.Roles.Librarian)] 
-        [Authorize(Roles = BookLibraryManagerBL.Auth.Roles.Reader+", "+ BookLibraryManagerBL.Auth.Roles.Librarian)] // Any Role, of list
+        [Authorize(Roles = BookLibraryManagerBL.Auth.Roles.Reader + ", " + BookLibraryManagerBL.Auth.Roles.Librarian)] // Any Role, of list
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAllBooks()
         {
             var result = await _booksService.GetAllBooks();
 
-            if(result != null)
+            if (result != null)
             {
                 return Ok(result);
             }
@@ -86,7 +80,7 @@ namespace BookLibraryManager.Controllers
         {
             var result = await _booksService.UpdateBook(book);
 
-            if(result)
+            if (result)
             {
                 return Ok();
             }
