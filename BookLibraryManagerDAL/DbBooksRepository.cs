@@ -20,7 +20,7 @@ namespace BookLibraryManagerDAL
         {
             var book = await _dbContext.Books.Include(x => x.BookRevisions).Where(x => x.Id == id).FirstOrDefaultAsync();
 
-            return (book);
+            return book;
         }
     }
 }

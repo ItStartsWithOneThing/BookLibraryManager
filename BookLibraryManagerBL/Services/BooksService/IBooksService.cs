@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BookLibraryManagerBL.BooksService.Services
+namespace BookLibraryManagerBL.Services.BooksService
 {
     public interface IBooksService
     {

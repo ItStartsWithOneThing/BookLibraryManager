@@ -7,8 +7,6 @@ using BookLibraryManagerBL.Services.SMTPService;
 using BookLibraryManagerDAL;
 using BookLibraryManagerDAL.Entities;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BookLibraryManagerBL.Services.AuthService
@@ -42,8 +40,10 @@ namespace BookLibraryManagerBL.Services.AuthService
 
         public async Task<string> SignIn(string login, string password)
         {
+            var hashedPassword = _hashService.HashString(password);
+
             var user = await _genericUsersRepository.GetSingleByPredicate(
-                x => x.Email == login && x.Password == _hashService.HashString(password));
+                x => x.Email == login && x.Password == hashedPassword);
 
             if (user != null)
             {
@@ -70,13 +70,13 @@ namespace BookLibraryManagerBL.Services.AuthService
                 await _smtpService.SendMail(
                     new MailInfo()
                     {
-                        ClientName = $"{user.FirstName} {user.LastName}",
-                        Email = user.Email,
+                        ClientName = $"{newUser.FirstName} {newUser.LastName}",
+                        Email = newUser.Email,
                         Subject = "BookKibraryManager - Email confirmation",
-                        Body = "https://localhost:5001/users/confirm?email="+GenerateConfirmationString(user.Email)
+                        Body = "https://localhost:5001/users/confirm?email="+GenerateConfirmationString(newUser.Email)
                     });
 
-                return Guid.Empty;
+                return response;
             }
 
             throw new UnauthorizedAccessException("Use another Email address");

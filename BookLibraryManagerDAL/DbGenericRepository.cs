@@ -35,7 +35,7 @@ namespace BookLibraryManagerDAL
                 return item.Id;
             }
 
-            return Guid.Empty;
+            throw new Exception("Error occurred while creating new item in Database");
         }
 
         public async Task<T> GetById(Guid id)
@@ -45,7 +45,7 @@ namespace BookLibraryManagerDAL
 
         public async Task<IEnumerable<T>> GetAll()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
 
         public async Task<bool> Update(T item)
@@ -69,7 +69,7 @@ namespace BookLibraryManagerDAL
 
         public async Task<T> GetSingleByPredicate(Expression<Func<T, bool>> predicate)
         {
-            return await _dbSet.Where(predicate).FirstOrDefaultAsync() ;
+            return await _dbSet.Where(predicate).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<T>> GetRangeByPredicate(Expression<Func<T, bool>> predicate)

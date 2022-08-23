@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BookLibraryManagerBL.BooksService.Services
+namespace BookLibraryManagerBL.Services.BooksService
 {
     public class BooksService : IBooksService
     {
@@ -30,21 +30,14 @@ namespace BookLibraryManagerBL.BooksService.Services
 
         public async Task<Guid> CreateBook(BookDto book)
         {
-            var result = Guid.Empty;
-
             if (book != null)
             {
                 var dbBook = _mapper.Map<Book>(book);
 
-                result = await _genericBookRepository.Create(dbBook);
+                return await _genericBookRepository.Create(dbBook);
             }
 
-            if(result != Guid.Empty)
-            {
-                return result;
-            }
-
-            return Guid.Empty;
+            throw new ArgumentException("Cannot create empty book");
         }
 
         public async Task<BookDto> GetBookById(Guid id)

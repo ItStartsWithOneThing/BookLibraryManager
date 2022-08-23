@@ -1,4 +1,4 @@
-﻿using BookLibraryManagerBL.BooksService.Services;
+﻿using BookLibraryManagerBL.Services.BooksService;
 using BookLibraryManagerBL.DTOs;
 using BookLibraryManagerDAL;
 using Microsoft.AspNetCore.Authorization;

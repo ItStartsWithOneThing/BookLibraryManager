@@ -1,7 +1,7 @@
 using BookLibraryManagerBL;
 using BookLibraryManagerBL.Auth;
 using BookLibraryManagerBL.AutoMapper.Profiles;
-using BookLibraryManagerBL.BooksService.Services;
+using BookLibraryManagerBL.Services.BooksService;
 using BookLibraryManagerBL.Options;
 using BookLibraryManagerBL.Services.AuthService;
 using BookLibraryManagerBL.Services.EncryptionService;
