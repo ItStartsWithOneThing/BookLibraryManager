@@ -5,6 +5,7 @@ using BookLibraryManagerBL.Services.EncryptionService;
 using BookLibraryManagerBL.Services.HashService;
 using BookLibraryManagerBL.Services.SMTPService;
 using BookLibraryManagerDAL;
+using BookLibraryManagerDAL.CachingSystem;
 using BookLibraryManagerDAL.Entities;
 using System;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace BookLibraryManagerBL.Services.AuthService
         private readonly IMapper _mapper;
         private readonly ISmtpService _smtpService;
         private readonly IEncryptionService _encryptionService;
+        private readonly ICacheRepository _cacheRepository;
 
         public AuthService(IDbGenericRepository<User> genericUsersRepository,
                             IDbGenericRepository<Role> genericRolesRepository,
@@ -27,7 +29,8 @@ namespace BookLibraryManagerBL.Services.AuthService
                             IHashService hashService, 
                             IMapper mapper, 
                             ISmtpService smtpService,
-                            IEncryptionService encryptionService)
+                            IEncryptionService encryptionService,
+                            ICacheRepository cacheRepository)
         {
             _genericUsersRepository = genericUsersRepository;
             _genericRolesRepository = genericRolesRepository;
@@ -36,6 +39,7 @@ namespace BookLibraryManagerBL.Services.AuthService
             _mapper = mapper;
             _smtpService = smtpService;
             _encryptionService = encryptionService;
+            _cacheRepository = cacheRepository;
         }
 
         public async Task<string> SignIn(string login, string password)
@@ -47,7 +51,7 @@ namespace BookLibraryManagerBL.Services.AuthService
 
             if (user != null)
             {
-                var role = user.RoleId.HasValue ? (await _genericRolesRepository.GetById(user.RoleId.Value)).Name : Roles.Reader;
+                var role = user.RoleId.HasValue ? (await GetRole(user.RoleId.Value)) : Roles.Reader;
 
                 return _tokenGenerator.GenerateToken(user.Email, role);
             }
@@ -105,7 +109,18 @@ namespace BookLibraryManagerBL.Services.AuthService
         }
 
 
+        private async Task<string> GetRole(Guid roleId)
+        {
+            var cachedRole = await _cacheRepository.GetAsync(roleId.ToString());
 
+            if (string.IsNullOrEmpty(cachedRole))
+            {
+                cachedRole = (await _genericRolesRepository.GetById(roleId)).Name;
+                await _cacheRepository.SaveAsync(roleId.ToString(), cachedRole);
+            }
+
+            return cachedRole;
+        }
 
 
         public async Task<bool> HashAdminSeedPass(string password)
